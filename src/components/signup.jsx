@@ -12,7 +12,7 @@ import {useNavigate, useSearchParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import * as Yup from "yup";
 import Error from "./error";
-import { login } from "@/db/apiAuth";
+import { signup } from "@/db/apiAuth";
 import {BeatLoader} from "react-spinners";
 import useFetch from "@/hooks/useFetch";
 import { UrlState } from "@/context";
@@ -25,19 +25,21 @@ const Signup = () => {
 
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
+    name:"",
     email: "",
     password: "",
+    profile_pic:null,
   });
 
   const handleInputChange = (e) => {
-    const {name, value} = e.target;
+    const {name, value, files} = e.target;
     setFormData((prevState) => ({
       ...prevState,
-      [name]: value,
+      [name]: files? files[0] : value,
     }));
   };
 
-  const {loading, error, fn: fnLogin, data} = useFetch(login, formData);
+  const {loading, error, fn: fnSignup, data} = useFetch(signup, formData);
    const {fetchUser} = UrlState();
 
   useEffect(() => {
@@ -47,22 +49,24 @@ const Signup = () => {
       navigate(`/dashboard?${longLink ? `createNew=${longLink}` : ""}`);
     }
     //  eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [error, data]);
+  }, [error,loading]);
 
-  const handleLogin = async () => {
+  const handleSignup = async () => {
     setErrors([]);
     try {
       const schema = Yup.object().shape({
+        name: Yup.string().required("Name is required"),
         email: Yup.string()
           .email("Invalid email")
           .required("Email is required"),
         password: Yup.string()
           .min(6, "Password must be at least 6 characters")
           .required("Password is required"),
+        profile_pic: Yup.mixed().required("Profile picture is required"),  
       });
 
       await schema.validate(formData, {abortEarly: false});
-      await fnLogin();
+      await fnSignup();
 
     } catch (e) {
       const newErrors = {};
@@ -78,13 +82,22 @@ const Signup = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Login</CardTitle>
+        <CardTitle>Signup</CardTitle>
         <CardDescription>
-          to your account if you already have one
+          Create a new account if you haven't yet
         </CardDescription>
         {error && <Error message={error.message} />}
       </CardHeader>
       <CardContent className="space-y-2">
+      <div className="space-y-1">
+          <Input
+            name="name"
+            type="text"
+            placeholder="Enter Your Name"
+            onChange={handleInputChange}
+          />
+        </div>
+        {errors.name && <Error message={errors.name} />}
         <div className="space-y-1">
           <Input
             name="email"
@@ -103,10 +116,19 @@ const Signup = () => {
           />
         </div>
         {errors.password && <Error message={errors.password} />}
+        <div className="space-y-1">
+          <Input
+            name="profile_pic"
+            type="file"
+            accept="image/*"
+            onChange={handleInputChange}
+          />
+        </div>
+        {errors.profile_pic && <Error message={errors.profile_pic} />}
       </CardContent>
       <CardFooter>
-        <Button onClick={handleLogin}>
-          {loading ? <BeatLoader size={10} color="#36d7b7" /> : "Login"}
+        <Button onClick={handleSignup}>
+          {loading ? <BeatLoader size={10} color="#36d7b7" /> : "Create account"}
         </Button>
       </CardFooter>
     </Card>
