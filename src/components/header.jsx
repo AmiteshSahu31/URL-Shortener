@@ -43,7 +43,12 @@ const Header = () => {
             <DropdownMenuContent>
               <DropdownMenuLabel>{user?.user_metadata?.name}</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem><LinkIcon className='size-4'/>My Links</DropdownMenuItem>
+              <DropdownMenuItem>
+               <Link to="/dashboard" className='flex'>
+                <LinkIcon className='size-4'/>
+                My Links
+               </Link>
+              </DropdownMenuItem>
               <DropdownMenuItem className="text-red-400">
                 <LogOut className="size-4"/>
                 <span onClick={() => {
