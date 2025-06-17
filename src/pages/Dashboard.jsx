@@ -1,7 +1,6 @@
 import {useEffect, useState} from "react";
 import {BarLoader} from "react-spinners";
 import {Filter} from "lucide-react";
-
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {Input} from "@/components/ui/input";
 import Error from "@/components/error";
@@ -13,7 +12,7 @@ import LinkCard from "@/components/link-card";
 import CreateLink from "@/components/create-link";
 
 const Dashboard = () => {
-  
+
   const [searchQuery, setSearchQuery] = useState("");
   const {user} = UrlState();
   const {loading, error, data: urls, fn: fnUrls} = useFetch(getUrls, user.id);
