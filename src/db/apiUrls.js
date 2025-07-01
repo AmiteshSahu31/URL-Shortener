@@ -50,3 +50,35 @@ export async function createUrl({title, longUrl, customUrl, user_id}, qrcode){
    return data;
     
 }
+
+export async function getLongUrl(id) {
+  const {data: shortLinkData, error: shortLinkError} = await supabase
+    .from("urls")
+    .select("id, original_url")
+    .or(`short_url.eq.${id},custom_url.eq.${id}`)
+    .single();
+
+  if (shortLinkError) {
+    console.error("Error fetching short link:", shortLinkError);
+    return;
+  }
+
+  return shortLinkData;
+}
+
+export async function getUrl({id,user_id}) {
+  const {data, error} = await supabase
+    .from("urls")
+    .select("*")
+    .eq("id",id)
+    .eq("user_id",user_id)
+    .maybeSingle();
+
+    console.log("Prinnting the data",data);
+
+  if (error) {
+    console.error("short Url not found", error);
+  }
+
+  return data;
+}
