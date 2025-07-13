@@ -10,14 +10,14 @@ import {
 } from "recharts";
 
 const Location = ({stats=[]}) => {
-    const cityCount= stats.reduce((acc,item) =>{
-        if(acc[item.city] == 1){
-            acc[item.city]++;
-        }else{
-            acc[item.city]=1;
-        }
-        return acc;
-    },{});
+   const cityCount = stats.reduce((acc, item) => {
+    if (acc[item.city]) {
+      acc[item.city] += 1;
+    } else {
+      acc[item.city] = 1;
+    }
+    return acc;
+  }, {});
 
     const cities= Object.entries(cityCount).map(([city,count])=>({
         city,
