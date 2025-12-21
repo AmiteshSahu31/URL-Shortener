@@ -23,6 +23,15 @@ const RedirectLink = () => {
     }
   },[loading]);
 
+//   useEffect(() => {
+//   if(!loading && data){
+//     fnStats().then(() => {
+//       window.location.href = data.original_url;
+//     })
+//   }
+// }, [loading, data]);
+
+
   if(loading || loadingStats){
     return (
       <>
